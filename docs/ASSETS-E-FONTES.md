@@ -1,6 +1,6 @@
 # Assets e fontes — Caminhão de lixo por dentro
 
-**Situação inicial:** nenhum modelo, som ou conjunto de dados novo incorporado. Abaixo estão referências e tarefas de apuração, não certificação técnica de um aplicativo pronto.
+**Estado atual:** modelo procedural autoral, fontes locais licenciadas e áudio sintetizado. Aplicação educativa validada localmente.
 
 ## Conteúdo que originou a proposta
 
@@ -11,28 +11,20 @@ O Short sobre o aterro registrou 91.251 visualizações no YouTube. Esse resulta
 
 Leitura em 07/11/2026. A análise consultou as APIs oficiais do Instagram/YouTube e relatórios existentes do canal. Vídeos do próprio canal orientam a pauta; fatos científicos/operacionais precisam retornar a fontes primárias antes de serem usados no modelo.
 
-## Apuração obrigatória antes de implementar
+## Fonte mecânica consultada em 07/11/2026
 
-- Manual e esquema de um compactador traseiro identificado por fabricante/modelo.
-- Sequência real de alimentação, compactação, retorno e travas; escolher uma variante antes de animar.
+[McNeilus — Rear Loader Operator Manual, 1432584, revisão 0918](https://www.amtruck.com/wp-content/uploads/2021/10/Rear-Loader-Manual-.pdf#page=74), seção 3.6, figura 25, páginas impressas 60–61 (PDF 74–75). Fonte primária do fabricante hospedada por distribuidor. Sustenta a ordem: abrir lâmina, descer carro, fechar lâmina, subir carro. A figura foi conferida visualmente.
 
-Para cada afirmação, registrar: texto, fonte primária, URL/página, data de consulta, trecho ou figura de suporte, unidades, limites e onde aparece na experiência. Não listar uma instituição como se um documento específico já tivesse sido conferido.
+Não foram copiados desenhos, PDF, medidas, logotipos McNeilus ou texturas do fabricante. Modelo independente, proporções e duração ilustrativas; não demonstra descarga nem parâmetros de segurança/operação.
 
-## Necessidade de geometria
+## Assets incorporados
 
-Carroceria e mecanismo separados por função; pivôs de braços e placa definidos antes do acabamento. Resíduos podem ser volumes simplificados com trajetória determinística.
+| Asset | Origem | Uso e termos |
+|---|---|---|
+| Geometria e materiais do caminhão | Autoria desta implementação para ovictorlab | Código procedural em `src/scene/truck.ts`; nenhum modelo externo redistribuído |
+| Marca | SVG oficial do site ovictorlab.com | `public/icon.svg` e `src/ui/Brand.tsx`, identidade do próprio projeto |
+| Áudio | Síntese Web Audio local | Sem gravação externa; som ilustrativo |
+| Anton, Archivo, Archivo Black, JetBrains Mono | Pacotes Fontsource 5.3.0 | SIL OFL 1.1; textos em `public/licenses/` |
+| React, Three, Vite, Lucide e demais bibliotecas | Dependências fixadas em package-lock.json | Avisos/termos agregados em `public/licenses/bibliotecas.txt` |
 
-## Registro de aquisição
-
-Preencher uma linha por asset ao incorporar. Manter a tabela vazia enquanto nada foi adquirido.
-
-| Arquivo/asset | Autor e URL | Licença/termos e data | Uso web permitido | Alterações | Hash/créditos |
-|---|---|---|---|---|---|
-
-Confirmar permissão para servir o arquivo no navegador: GLB e áudio enviados ao visitante são extraíveis. A licença do código não substitui a licença dos assets. Não baixar pacote executável, rodar scripts embutidos ou publicar interiores não verificados como engenharia fiel.
-
-## Referências da coleção
-
-- Marca e tipografia: fontes oficiais apontadas em IDENTIDADE-VISUAL.md.
-- Interação: [Fusquinha](https://github.com/victorsodre/fusquinha), especialmente README e documentação de assets.
-- Som: escolher fontes com licença explícita, início por gesto e mute. Evitar sons que sugiram mecanismo diferente do representado.
+O modelo de referência Fusquinha orientou possibilidades de interação; código, GLB e áudio não foram copiados.

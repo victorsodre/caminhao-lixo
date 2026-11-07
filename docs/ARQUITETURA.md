@@ -1,71 +1,26 @@
-# Arquitetura proposta
+# Arquitetura implementada
 
-Documento de planejamento. Nenhum comando de build ou teste existe ainda neste repositório.
+Aplicação estática React 19.2.6 + TypeScript 5.9.3 + Three.js 0.187.0 + Vite 8.3.6. Dependências e lockfile fixados; sem servidor de aplicação, LLM ou GPU dedicada. `vite.config.ts` usa base relativa.
 
-## Base
+- `src/App.tsx`: estado da experiência, controles HTML, navegação por teclado e visita guiada.
+- `src/content/project.ts`: explicações e fontes.
+- `src/simulation/packer.ts`: quatro movimentos determinísticos, limites e avanço temporal.
+- `src/scene/truck.ts`: modelo autoral, nove grupos semânticos, pivôs, volumes de resíduos e atuadores.
+- `src/scene/runtime.ts`: ciclo de vida WebGL, seleção, corte, isolamento, desmontagem, câmera, suspensão e descarte.
+- `src/scene/camera.ts`: enquadramento por limites do objeto e proporção da tela.
+- `src/scene/capture.ts`: composição PNG com logo oficial e formatos 16:9/9:16.
+- `src/scene/audio.ts`: som sintetizado após gesto, desligado por padrão.
+- `src/styles.css`: tokens oficiais e layouts desktop/celular.
+- `public/licenses/`: termos das bibliotecas e fontes servidos junto ao build.
 
-React + TypeScript + Three.js + Vite, como referência do Fusquinha. Fixar versões e lockfile no início da implementação, após verificar compatibilidade atual e licença do código reaproveitado. Não adotar a versão antiga do Three apenas por cópia automática.
+## Invariantes
 
-Aplicação estática executada no navegador do visitante. O MVP não requer LLM, backend nem GPU de produção permanentemente alocada. Modelagem e processamento de assets são tarefas separadas e delimitadas.
+Transforms sempre derivam da pose de referência. Peças móveis não participam do agrupamento de malhas estáticas. Corte altera apenas painéis definidos; seleção usa IDs estáveis. A exportação restaura câmera, resolução e DPR em `finally`.
 
-## Organização sugerida
+O avanço usa segundos, limita delta a 0,1 e não avança quando pausado/oculto. Um ciclo ilustrativo dura 14 segundos. Geometria e volumes não são dados industriais. A transferência da carga é determinística, sem física de partículas.
 
-```text
-src/
-  app/              composição da tela e estados de carregamento
-  scene/            cena, câmera, iluminação e renderização
-  interactions/     seleção, isolamento, corte e desmontagem
-  simulation/       estado determinístico do mecanismo educativo
-  content/          catálogo, explicações, vídeos e fontes
-  ui/               controles HTML acessíveis
-  styles/           tokens do ovictorlab e layout
-public/
-  models/           somente arquivos com entrega web autorizada
-  audio/            sons licenciados, carregados sob demanda
-  fonts/            fontes locais e respectivas licenças
-```
+## Desempenho
 
-Criar só o que o piloto utilizar. Começar independente; extrair um pacote compartilhado depois que o segundo projeto comprovar reutilização concreta.
+Renderização sob demanda, teto de 30 fps durante interação e DPR até 1,5. Materiais/geometria/observadores/listeners são descartados no unmount. Agrupamento de malhas estáticas reduziu chamadas de desenho de 384 para 144 na vista inicial. Bundle JS da build validada: 833,79 KB / 225,27 KB gzip. O aviso de chunk acima de 500 KB é esperado pelo Three; não foi suprimido.
 
-## Contratos
-
-- Peça: `id`, `label`, `groupId`, nós do modelo, pose de origem, descrição e referências. IDs estáveis entre atualizações.
-- Seleção: um catálogo determina o que pode ser selecionado; elementos auxiliares não capturam clique por acidente.
-- Desmontagem: transformação deriva de pose de origem e progresso 0–1; nunca acumula deslocamento a cada frame. Corte e desmontagem são modos distintos.
-- Mecanismo: estado serializável, limites explícitos, pausa e reset. Tempo de animação não depende de quantidade de frames.
-- Fontes: título, instituição/autor, URL, data de consulta, afirmação suportada e limite. Texto da interface aponta para esse catálogo.
-- Áudio: inicia após gesto, tem volume/mute e para com cena oculta ou mecanismo desligado.
-
-## O que avaliar no Fusquinha
-
-`src/VehicleScene.tsx`: renderização/câmera/seleção. `src/catalog.ts`: agrupamento. `src/layout.ts`: posições e enquadramento. `src/vehicle-rig.ts`: pivôs e articulação. `src/vehicle-sounds.ts`: áudio. `src/engine-motion.ts`: movimento e pausa. Esses arquivos são referências de implementação, não garantem uma biblioteca pronta para outros objetos.
-
-Antes de copiar, conferir responsabilidades, licenças e dependências. Motor, material, cenário e GLB do Fusquinha não pertencem automaticamente ao novo projeto.
-
-## Orçamento inicial de desempenho
-
-Metas propostas a validar no primeiro protótipo, não resultados já medidos:
-
-- Cena em aproximadamente 30 fps durante interação no dispositivo móvel de referência registrado.
-- Renderização sob demanda quando parada; suspender trabalho em aba oculta.
-- Começar com DPR limitado a 1,5 no celular, texturas de 1K quando suficientes e cena progressiva. Ajustar por medição visual e de memória.
-- Buscar até 10 MB comprimidos para a primeira cena útil; qualquer exceção precisa de comparação antes/depois e carregamento progressivo.
-- Medir modelo, texturas, draw calls e tempo até o primeiro controle utilizável. Evitar simulação física genérica quando uma cinemática determinística explica o fenômeno.
-
-## Entrega futura
-
-Build estático com caminhos relativos ou base configurável; testar recarga direta e hospedagem em subpasta. Integração com ovictorlab.com pode usar rota ou link, a decidir quando houver aplicação pronta. Não alterar o site principal durante o desenvolvimento inicial.
-
-Captura PNG é uma possibilidade herdada do Fusquinha. Presets de câmera 16:9 e 9:16 e tour guiado são extensões planejadas; não estão implementados. Gravar vídeo exige validar o método de captura e sincronização do som.
-
-## Implementação específica
-
-Geometria: Carroceria e mecanismo separados por função; pivôs de braços e placa definidos antes do acabamento. Resíduos podem ser volumes simplificados com trajetória determinística.
-
-Estado proposto: `idle → loading → compacting → returning → idle; paused conserva a fase e reset restaura a pose inicial.`
-
-Invariantes que devem orientar código e testes:
-
-- O fim de um ciclo coincide com a pose inicial, sem saltos de peças ou acumulação de transformações.
-- O corte permite acompanhar o lixo e o movimento da placa; não simula descarga sem um mecanismo documentado.
-- A geometria dos atuadores acompanha os pivôs durante todo o curso; não atribuir pressão ou força sem fonte.
+A mesma base visual pode informar os próximos projetos, mas este repositório instala e compila sozinho. Nenhum código ou asset do Fusquinha foi copiado.

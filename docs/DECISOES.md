@@ -8,7 +8,7 @@
 - Repositório inicialmente privado por escolha operacional conservadora nesta fase. O pedido autoriza o envio dos guias; não foi tratado como solicitação de implementar e publicar os aplicativos.
 - Nenhuma postagem no X enviada. Textos de protótipo e lançamento têm condições explícitas de uso.
 
-## Pendências técnicas
+## Pendências iniciais — resolvidas na implementação
 
 - Manual e esquema de um compactador traseiro identificado por fabricante/modelo.
 - Sequência real de alimentação, compactação, retorno e travas; escolher uma variante antes de animar.
@@ -18,3 +18,11 @@ Próxima ação: Escolher uma variante de compactador e montar um estudo do cicl
 ## Como registrar mudanças
 
 Acrescentar data, decisão, motivo, fonte/evidência, arquivos afetados e consequência para o escopo. Separar proposta, implementação, validação e publicação. Preservar decisões antigas com indicação de substituição quando necessário.
+
+## 2026-11-07 — aplicação implementada
+
+Victor definiu a meta de desenvolver os dez projetos até completar os respectivos escopos. Isso substitui a restrição anterior à documentação; publicação web e envio de posts continuam separados.
+
+Caminhão autoral procedural escolhido para permitir pivôs e corte verificáveis, sem redistribuir o asset do Fusquinha. Ciclo de quatro movimentos do McNeilus Standard Rear Loader, seção 3.6/figura 25. Não modelamos a descarga.
+
+Dez testes aprovados, build/check aprovados, zero vulnerabilidades no audit da instalação e fluxos reais no Chrome. Dois formatos PNG com marca, mobile sem sobreposição do detalhe com o modelo, fallback WebGL verificado. Evidências/limites em VALIDACAO.md. Próxima ação local: manter este baseline enquanto a coleção avança; nenhum deploy realizado.

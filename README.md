@@ -1,6 +1,6 @@
 # Caminhão de lixo por dentro
 
-> **Estado: documentação inicial.** Aplicação ainda não implementada. Planejamento criado em 2026-11-07; prioridade recomendada 1/10.
+> **Estado: aplicação implementada e validada localmente em 07/11/2026.** Publicação web ainda não realizada. Primeira entrega da coleção de dez projetos.
 
 **Como cabe tanto lixo dentro do caminhão?**
 
@@ -26,10 +26,29 @@ O Short sobre o aterro registrou 91.251 visualizações no YouTube. Esse resulta
 7. [Decisões e estado do projeto](docs/DECISOES.md).
 8. [Textos para o X](POSTAGENS-X.md) e [ordem da coleção](docs/COLECAO.md).
 
-**Próxima ação:** Escolher uma variante de compactador e montar um estudo do ciclo com blocos, antes de detalhar o caminhão.
+## Executar e verificar
 
-**Esforço relativo:** Médio/alto: depende de encontrar ou modelar um compactador articulável. Prazo só deve ser estimado depois da validação de modelo e fontes.
+Requer Node.js 22.18+ e npm. Versões de dependências fixadas no lockfile.
 
-## O que esta entrega inclui
+```sh
+npm ci --ignore-scripts
+npm run dev
+npm test
+npm run check
+npm run build
+npm run preview
+```
 
-Guias de desenvolvimento e manutenção, identidade visual, limites de escopo e rascunhos de divulgação. Não há aplicação, modelo 3D novo, licença de asset adquirida ou site publicado. Os repositórios foram preparados para trabalho independente, inicialmente privado. Não existe `npm install`, `npm test` ou deploy a executar nesta fase.
+`dist/` é estático, com caminhos relativos; funciona também em subpasta. Não requer backend, LLM ou a GPU de produção.
+
+## Recursos entregues
+
+Modelo procedural autoral com nove conjuntos, ciclo de compactação em quatro movimentos, pausa e reset, corte, desmontagem, seleção por clique/lista, busca, isolamento, reenquadramento, malha, visita guiada e som sintetizado opcional. Captura PNG com a identidade ovictorlab em 1920×1080 e 1080×1920.
+
+Referência mecânica: McNeilus Standard Rear Loader, manual 1432584, seção 3.6/figura 25. A geometria e o tempo são educativos; não são medidas ou parâmetros de operação de um caminhão real.
+
+## Validação e manutenção
+
+[Resultados, ambiente e limites](docs/VALIDACAO.md). Dez testes de mecanismo/modelo/câmera aprovados; TypeScript e build aprovados; fluxos reais no Chrome, incluindo dimensões de celular e build em subpasta. Não houve ensaio em telefone físico.
+
+[Manutenção](docs/MANUTENCAO.md), [assets e licenças](docs/ASSETS-E-FONTES.md), [decisões](docs/DECISOES.md). Rascunhos do X continuam sem envio; nenhum deploy automático foi configurado.

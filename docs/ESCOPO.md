@@ -19,7 +19,7 @@ Esses grupos são uma proposta semântica; validar sua correspondência com a ge
 
 ## Ações principais
 
-| Controle | Comportamento planejado |
+| Controle | Comportamento implementado |
 |---|---|
 | Compactar | Executa um ciclo delimitado, com pausa e retorno ao repouso. |
 | Abrir por dentro | Expõe o conjunto traseiro e a caixa sem retirar suas referências espaciais. |
@@ -29,7 +29,7 @@ Base de exploração: órbita, zoom, seleção por lista ou clique, isolamento, 
 
 ## Estado do mecanismo
 
-`idle → loading → compacting → returning → idle; paused conserva a fase e reset restaura a pose inicial.`
+`abrir → descer → varrer → compactar → concluído`; pausa conserva a fase, repetir inicia outro ciclo e reset restaura a experiência. A pose mecânica final coincide com a inicial; os resíduos permanecem dentro da caixa até repetir/resetar.
 
 ## Critérios específicos de conclusão
 
