@@ -30,3 +30,7 @@ Dez testes aprovados, build/check aprovados, zero vulnerabilidades no audit da i
 ## 2026-11-08 — repositório público e GitHub Pages
 
 Victor autorizou aprimorar e tornar públicos os dez projetos com HTML funcional e identidade oficial. Esta decisão substitui a restrição histórica de publicação acima. Incluídos navegação entre os dez sites, canonical/OG/X, prévia real, sitemap, página 404, verificação de caminhos e workflow com testes/build antes do deploy. URL: https://victorsodre.github.io/caminhao-lixo/. Conteúdo e modelo educativo preservados; nenhum post enviado ao X. Procedimento e reversão em PUBLICACAO.md.
+
+## 2026-11-08 — vídeo do canal incorporado
+
+Pedido de Victor: embed abaixo do experimento e thumbnail clicável no README. Vídeo `7EmikyV0mzk`, autoria ovictorlab confirmada pelo oEmbed público. O vídeo acompanha o destino do lixo no aterro. Aqui, você explora a etapa anterior: a compactação dentro do caminhão. Player `youtube-nocookie.com`, criado só por clique, `autoplay=0`, controles nativos, referrer de origem e link direto sempre disponível. Capa local para não carregar o YouTube na abertura; layout portrait. Cabeçalho leva à seção `#video`. Identidade preservada; nenhum upload ou alteração de vídeo no canal.

@@ -1,3 +1,4 @@
+import { VideoSection } from './ui/VideoSection.tsx';
 import { CollectionNav } from './ui/CollectionNav.tsx';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ArrowLeft, ArrowRight, ArrowUpRight, Box, ChevronRight, Download, Eye, Focus, Layers3, Maximize, Minus, Pause, Play, Plus, RotateCcw, Search, Volume2, VolumeX, X } from 'lucide-react';
@@ -100,7 +101,7 @@ export function App() {
     </div>
   </>;
   return <div className="app">
-    <header className="header"><Brand/><div className="collection-label">ENGENHARIA POR DENTRO <span>/</span> LAB {project.number}</div><a className="video-link" href={project.video} target="_blank" rel="noreferrer">Assistir ao vídeo <ArrowUpRight size={16}/></a></header>
+    <header className="header"><Brand/><div className="collection-label">ENGENHARIA POR DENTRO <span>/</span> LAB {project.number}</div><a className="video-link" href="#video">Assistir ao vídeo <ArrowUpRight size={16}/></a></header>
     <main className="workspace">
       <div className="heading"><p className="eyebrow"><span/> EXPERIMENTO {project.number} <i>—</i> COLETA URBANA</p><h1>{project.title}</h1><p className="intro">{project.intro}</p></div>
       <div className="canvas-region"><div className="scene-host" ref={host}/>
@@ -122,7 +123,7 @@ export function App() {
         {reduced && <p className="motion-note">Movimento reduzido ativo. Você também pode explorar pelas etapas e pelos controles deslizantes.</p>}
       </section>
     </main>
-    <footer><span>UM EXPERIMENTO DO OVICTORLAB <i>© 2026</i></span><button onClick={() => setSources(true)}>Modelo educativo · Fontes e créditos <ArrowUpRight size={13}/></button><CollectionNav current="caminhao-lixo"/></footer>
+    <VideoSection/><footer><span>UM EXPERIMENTO DO OVICTORLAB <i>© 2026</i></span><button onClick={() => setSources(true)}>Modelo educativo · Fontes e créditos <ArrowUpRight size={13}/></button><CollectionNav current="caminhao-lixo"/></footer>
     <Sources open={sources} onClose={() => setSources(false)}/>
     <dialog ref={partsDialog} className="parts-dialog" onClose={() => setDrawer(false)} aria-label="Conjuntos do caminhão"><div className="dialog-top"><span className="eyebrow">CONHEÇA OS CONJUNTOS</span><button className="icon-button" aria-label="Fechar conjuntos" onClick={() => setDrawer(false)}><X size={20}/></button></div>{renderParts()}</dialog>
     <span className="sr-only" role="status" aria-live="polite">{notice}</span>

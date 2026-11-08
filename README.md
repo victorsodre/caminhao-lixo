@@ -10,6 +10,16 @@ Um caminhão coletor de carregamento traseiro, estacionado, com corte da carroce
 
 Direção e autoria editorial: **Victor Sodré / ovictorlab**. [Site](https://ovictorlab.com/) · [Referência Fusquinha](https://victorsodre.github.io/fusquinha/) · [Repositório](https://github.com/victorsodre/caminhao-lixo).
 
+## Vídeo relacionado do canal
+
+<a href="https://www.youtube.com/watch?v=7EmikyV0mzk"><img src="public/video-thumbnail.jpg" width="280" alt="Assistir: Para onde vai o lixo que o caminhão leva? (o aterro embrulha tudo)" /></a>
+
+**[Para onde vai o lixo que o caminhão leva? (o aterro embrulha tudo)](https://www.youtube.com/watch?v=7EmikyV0mzk)**
+
+O vídeo acompanha o destino do lixo no aterro. Aqui, você explora a etapa anterior: a compactação dentro do caminhão.
+
+O player incorporado fica [na página do experimento](https://victorsodre.github.io/caminhao-lixo/#video), com carregamento por clique e sem reprodução automática.
+
 ## Por que desenvolver
 
 O Short sobre o aterro registrou 91.251 visualizações no YouTube. Esse resultado pertence ao destino do lixo, não ao vídeo do compactador; é um sinal de interesse na família de temas. Consulta em 07/11/2026. Métricas acumuladas são sinais de interesse; não comprovam demanda pelo aplicativo ou alcance orgânico.
