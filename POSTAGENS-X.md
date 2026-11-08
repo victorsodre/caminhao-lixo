@@ -2,12 +2,12 @@
 
 Rascunhos para Victor publicar posteriormente. **Nada foi enviado.** Público: pessoas curiosas sobre engenharia/ciência e quem acompanha a construção dos projetos. Um assunto por post, sem métricas privadas ou promessa de data.
 
-## Planejamento
+## Apresentação do projeto
 
-Condição/mídia: Pode ser usado para anunciar a intenção. Mostrar esquema identificado como plano ou referência do Fusquinha.
+Condição/mídia: Versão local concluída. Anexar captura real; o texto não anuncia uma URL pública.
 
 ```text
-Depois do Fusquinha, quero abrir um caminhão de lixo por dentro. A ideia é deixar você controlar a compactação, acompanhar as peças e entender como tudo cabe ali. O planejamento do próximo experimento do ovictorlab está pronto.
+Depois do Fusquinha, abri um caminhão de lixo em 3D. Dá para controlar a compactação, pausar o ciclo e acompanhar a placa por dentro da carroceria. A versão educativa está funcionando localmente no laboratório do ovictorlab.
 ```
 
 ## Bastidor
