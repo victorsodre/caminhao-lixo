@@ -24,3 +24,11 @@ A ocultação nativa não foi confirmada neste Chrome de automação: trocar a a
 O modelo é explicativo: não fornece medidas reais, pressão, força ou instruções de operação. A pose mecânica final volta ao começo; a carga segue dentro da caixa até repetir/resetar.
 
 Sem deploy público, analytics ou postagem social. A etapa de desenvolvimento está concluída localmente dentro desses limites.
+
+## Revisão para publicação — 08/11/2026
+
+Testes automatizados do projeto, TypeScript/build e `check:pages` aprovados. O último verifica assets relativos em subpasta, canonical, prévia social, 404, sitemap e fallback sem JavaScript. O conjunto mantém 76 testes dos mecanismos.
+
+Chrome real em janela dedicada: build servido sob a subpasta do projeto, canvas e catálogo carregados, seleção, ação principal quando presente no dock, diálogo da coleção com dez destinos corretos, indicação da página atual, fechamento por Escape, foco devolvido e seleção preservada. Viewports 1440×1000 e 390×844, sem transbordamento horizontal, erros de JavaScript ou respostas HTTP de erro durante o fluxo. Capturas reais em `output/publish-local-*.png` (ignoradas pelo Git).
+
+A publicação usa o procedimento em [PUBLICACAO.md](PUBLICACAO.md). Verificação local não substitui conferir a URL após o deploy. Celular físico e Safari permanecem fora da amostra; o modelo mantém os limites educativos descritos acima.

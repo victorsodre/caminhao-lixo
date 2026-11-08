@@ -1,3 +1,4 @@
+import { CollectionNav } from './ui/CollectionNav.tsx';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ArrowLeft, ArrowRight, ArrowUpRight, Box, ChevronRight, Download, Eye, Focus, Layers3, Maximize, Minus, Pause, Play, Plus, RotateCcw, Search, Volume2, VolumeX, X } from 'lucide-react';
 import { Brand } from './ui/Brand.tsx';
@@ -84,7 +85,7 @@ export function App() {
   }
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.ctrlKey || e.metaKey || e.altKey || e.target instanceof HTMLInputElement || sources || drawer) return;
+      if (document.querySelector('dialog[open]') || e.ctrlKey || e.metaKey || e.altKey || e.target instanceof HTMLInputElement || sources || drawer) return;
       if (e.key.toLowerCase() === 'r') scene.current?.home();
       if (e.key.toLowerCase() === 'e') { setPlaying(false); setExplosion(p => p > 0 ? 0 : 1); }
       if (e.key === 'Escape') { setSelected(null); setIsolated(false); setTour(false); }
@@ -121,7 +122,7 @@ export function App() {
         {reduced && <p className="motion-note">Movimento reduzido ativo. Você também pode explorar pelas etapas e pelos controles deslizantes.</p>}
       </section>
     </main>
-    <footer><span>UM EXPERIMENTO DO OVICTORLAB <i>© 2026</i></span><button onClick={() => setSources(true)}>Modelo educativo · Fontes e créditos <ArrowUpRight size={13}/></button></footer>
+    <footer><span>UM EXPERIMENTO DO OVICTORLAB <i>© 2026</i></span><button onClick={() => setSources(true)}>Modelo educativo · Fontes e créditos <ArrowUpRight size={13}/></button><CollectionNav current="caminhao-lixo"/></footer>
     <Sources open={sources} onClose={() => setSources(false)}/>
     <dialog ref={partsDialog} className="parts-dialog" onClose={() => setDrawer(false)} aria-label="Conjuntos do caminhão"><div className="dialog-top"><span className="eyebrow">CONHEÇA OS CONJUNTOS</span><button className="icon-button" aria-label="Fechar conjuntos" onClick={() => setDrawer(false)}><X size={20}/></button></div>{renderParts()}</dialog>
     <span className="sr-only" role="status" aria-live="polite">{notice}</span>

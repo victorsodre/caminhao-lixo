@@ -26,3 +26,7 @@ Victor definiu a meta de desenvolver os dez projetos até completar os respectiv
 Caminhão autoral procedural escolhido para permitir pivôs e corte verificáveis, sem redistribuir o asset do Fusquinha. Ciclo de quatro movimentos do McNeilus Standard Rear Loader, seção 3.6/figura 25. Não modelamos a descarga.
 
 Dez testes aprovados, build/check aprovados, zero vulnerabilidades no audit da instalação e fluxos reais no Chrome. Dois formatos PNG com marca, mobile sem sobreposição do detalhe com o modelo, fallback WebGL verificado. Evidências/limites em VALIDACAO.md. Próxima ação local: manter este baseline enquanto a coleção avança; nenhum deploy realizado.
+
+## 2026-11-08 — repositório público e GitHub Pages
+
+Victor autorizou aprimorar e tornar públicos os dez projetos com HTML funcional e identidade oficial. Esta decisão substitui a restrição histórica de publicação acima. Incluídos navegação entre os dez sites, canonical/OG/X, prévia real, sitemap, página 404, verificação de caminhos e workflow com testes/build antes do deploy. URL: https://victorsodre.github.io/caminhao-lixo/. Conteúdo e modelo educativo preservados; nenhum post enviado ao X. Procedimento e reversão em PUBLICACAO.md.

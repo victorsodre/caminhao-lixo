@@ -1,6 +1,8 @@
 # Caminhão de lixo por dentro
 
-> **Estado: aplicação implementada e validada localmente em 07/11/2026.** Publicação web ainda não realizada. Primeira entrega da coleção de dez projetos.
+**[Abrir a experiência →](https://victorsodre.github.io/caminhao-lixo/)** · [Os 10 experimentos](docs/COLECAO.md) · [Publicação e manutenção](docs/PUBLICACAO.md)
+
+[![Caminhão de lixo — captura real da experiência](public/share.png)](https://victorsodre.github.io/caminhao-lixo/)
 
 **Como cabe tanto lixo dentro do caminhão?**
 
@@ -22,7 +24,7 @@ O Short sobre o aterro registrou 91.251 visualizações no YouTube. Esse resulta
 3. [Identidade visual do ovictorlab](docs/IDENTIDADE-VISUAL.md).
 4. [Arquitetura proposta e reaproveitamento do Fusquinha](docs/ARQUITETURA.md).
 5. [Assets, fontes e pendências de apuração](docs/ASSETS-E-FONTES.md).
-6. [Manutenção, validação e publicação futura](docs/MANUTENCAO.md).
+6. [Manutenção, validação e publicação](docs/MANUTENCAO.md).
 7. [Decisões e estado do projeto](docs/DECISOES.md).
 8. [Textos para o X](POSTAGENS-X.md) e [ordem da coleção](docs/COLECAO.md).
 
@@ -51,4 +53,4 @@ Referência mecânica: McNeilus Standard Rear Loader, manual 1432584, seção 3.
 
 [Resultados, ambiente e limites](docs/VALIDACAO.md). Dez testes de mecanismo/modelo/câmera aprovados; TypeScript e build aprovados; fluxos reais no Chrome, incluindo dimensões de celular e build em subpasta. Não houve ensaio em telefone físico.
 
-[Manutenção](docs/MANUTENCAO.md), [assets e licenças](docs/ASSETS-E-FONTES.md), [decisões](docs/DECISOES.md). Rascunhos do X continuam sem envio; nenhum deploy automático foi configurado.
+[Manutenção](docs/MANUTENCAO.md), [assets e licenças](docs/ASSETS-E-FONTES.md), [decisões](docs/DECISOES.md). Rascunhos do X continuam sem envio; o deploy automático está em `.github/workflows/pages.yml`.
