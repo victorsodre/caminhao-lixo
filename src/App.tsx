@@ -4,6 +4,7 @@ import { CollectionNav } from './kit/CollectionNav.tsx';
 import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { ArrowLeft, ArrowRight, ArrowUpRight, Box, ChevronRight, Download, Eye, FastForward, Focus, Layers3, Maximize, Minus, Pause, Play, Plus, RotateCcw, Search, Volume2, VolumeX, X } from 'lucide-react';
 import { Brand } from './kit/Brand.tsx';
+import { labNumber } from './kit/collection.ts';
 import { Sources } from './ui/Sources.tsx';
 import { project } from './content/project.ts';
 import { createScene } from './scene/runtime.ts';
@@ -156,9 +157,9 @@ export function App() {
     </div>
   </>;
   return <div className="app">
-    <header className="header"><Brand/><div className="collection-label">ENGENHARIA POR DENTRO <span>/</span> LAB {project.number}</div><a className="video-link" href="#video">Assistir ao vídeo <ArrowUpRight size={16}/></a></header>
-    <main className="workspace">
-      <div className="heading"><p className="eyebrow"><span/> EXPERIMENTO {project.number} <i>—</i> COLETA URBANA</p><h1>{project.title}</h1><p className="subtitle">{project.subtitle}</p><p className="intro">{project.intro}</p></div>
+    <header className="header"><Brand/><div className="collection-label">ENGENHARIA POR DENTRO <span>/</span> LAB {labNumber('caminhao-lixo')}</div><a className="video-link" href="#video">Ver o vídeo <ArrowUpRight size={16}/></a></header>
+    <main className={'workspace' + (currentPart || tour ? ' with-card' : '')}>
+      <div className="heading"><p className="eyebrow"><span/> EXPERIMENTO {labNumber('caminhao-lixo')} <i>—</i> COLETA URBANA</p><h1>{project.title}</h1><p className="subtitle">{project.subtitle}</p><p className="intro">{project.intro}</p></div>
       <div className="canvas-region"><div className="scene-host" ref={host}/>
         {!parts.length && !error && <div className="loading" role="status">Preparando o laboratório…</div>}
         {error && <div className="scene-error" role="alert"><Box size={32}/><h2>Cena indisponível</h2><p>{error}</p><button className="primary" onClick={() => location.reload()}>Tentar novamente</button><a href={project.video}>Assistir ao vídeo</a></div>}

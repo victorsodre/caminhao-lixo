@@ -1,5 +1,5 @@
 export const project = {
-  number: '01', title: 'CAMINHÃO DE LIXO', subtitle: 'Como cabe tanto lixo dentro do caminhão?',
+  title: 'CAMINHÃO DE LIXO', subtitle: 'Como cabe tanto lixo dentro do caminhão?',
   intro: 'Abra a carroceria e acompanhe o mecanismo que faz o lixo ocupar menos espaço.',
   video: 'https://www.youtube.com/watch?v=7EmikyV0mzk',
   stages: [

@@ -33,19 +33,22 @@ h1{font-family:Anton,Impact,sans-serif;font-weight:400;font-size:clamp(36px,3.7v
 .canvas-region{position:absolute;inset:0 0 0 280px;background:radial-gradient(ellipse at 50% 30%,#171e31 0%,#0b0d1a00 65%)}
 .scene-host{position:absolute;inset:15px 8px 196px 0}
 .scene-host canvas{display:block;width:100%;height:100%}
+/* An open card sits beside the model: the scene shrinks to its right and refits. */
+.with-card .scene-host{left:430px;right:76px}
 .scene-mode{position:absolute;right:36px;top:43px;display:flex;align-items:center;gap:8px;font:10px 'JetBrains Mono',monospace;color:var(--muted);letter-spacing:.8px;pointer-events:none}
 .mode-divider{width:1px;height:10px;background:#40465d;margin:0 5px}
 .status-dot{height:5px;width:5px;border-radius:50%;background:#727c89}
 .status-dot.active{background:var(--yellow)}
-.orbit-hint{position:absolute;bottom:282px;left:50%;transform:translateX(-50%);font-size:11px;color:#8b94ab;white-space:nowrap;pointer-events:none}
+.orbit-hint{position:absolute;top:41px;left:50%;transform:translateX(-50%);font-size:11px;color:#8b94ab;white-space:nowrap;pointer-events:none}
 .orbit-hint i{font-style:normal;padding:0 9px;color:#4f5670}
-.hint-coarse{display:none}
-@media(pointer:coarse){.hint-fine{display:none}
-.hint-coarse{display:inline}
+.hint-fine,.hint-coarse{display:none}
+@media(pointer:fine){.hint-fine{display:inline}
+}
+@media(pointer:coarse){.hint-coarse{display:inline}
 }
 
 .sidebar{position:absolute;left:40px;top:262px;bottom:24px;width:230px;z-index:2;overflow-y:auto;scrollbar-width:thin}
-.sidebar-label{font:10px 'JetBrains Mono',monospace;color:#929ab5;letter-spacing:1.4px;margin-bottom:20px}
+.sidebar-label{font:10px 'JetBrains Mono',monospace;color:#929ab5;letter-spacing:1.4px;margin-bottom:14px}
 .search{display:flex;gap:10px;align-items:center;border-bottom:1px solid var(--border);padding-bottom:12px;color:#7d879f}
 .search input{font:12px Archivo,sans-serif;width:100%;min-width:0;background:none;border:0;color:var(--muted);outline:none}
 .search span{font:10px 'JetBrains Mono',monospace}
@@ -57,9 +60,9 @@ h1{font-family:Anton,Impact,sans-serif;font-weight:400;font-size:clamp(36px,3.7v
 .part-row:hover strong,.part-row.selected strong{color:var(--yellow)}
 .part-row.selected svg{opacity:1}
 .part-row.selected>span{color:var(--yellow)}
-.sidebar-foot{margin-top:16px}
-.mini-line{display:block;background:var(--yellow);width:22px;height:1px;margin-bottom:16px;opacity:.65}
-.sidebar-foot p{font-size:11px;line-height:1.8;color:#7f89a0}
+.sidebar-foot{margin-top:12px}
+.mini-line{display:block;background:var(--yellow);width:22px;height:1px;margin-bottom:10px;opacity:.65}
+.sidebar-foot p{font-size:11px;line-height:1.8;color:#7f89a0;margin:0}
 .text-button{display:flex;align-items:center;gap:14px;font-size:11px;padding:6px 0;color:var(--muted)}
 .search-hint{display:block;color:var(--muted);font-size:11px;padding-top:12px;line-height:1.4}
 
@@ -71,7 +74,7 @@ h1{font-family:Anton,Impact,sans-serif;font-weight:400;font-size:clamp(36px,3.7v
 .camera-tools>span{height:1px;width:22px;background:#ffffff12;margin:6px 0}
 .camera-tools button:hover{background:#ffffff06;border-radius:4px}
 
-.inspector{position:absolute;left:300px;top:160px;width:268px;padding:20px;background:#101524f5;border:1px solid #ffffff10;border-radius:8px;box-shadow:0 16px 50px #0003;z-index:5;backdrop-filter:blur(12px);animation:appear .18s ease-out}
+.inspector{position:absolute;left:426px;top:40px;width:268px;padding:20px;background:#101524f5;border:1px solid #ffffff10;border-radius:8px;box-shadow:0 16px 50px #0003;z-index:5;backdrop-filter:blur(12px);animation:appear .18s ease-out}
 .inspector-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .inspector .eyebrow{font-size:10px;letter-spacing:1.2px}
 .icon-button{width:36px;height:36px;display:inline-flex;align-items:center;justify-content:center;border-radius:5px;color:var(--muted);flex-shrink:0}
@@ -118,7 +121,7 @@ input[type=range]::-moz-range-thumb{height:9px;width:9px;border-radius:50%;backg
 .explode-control output{font:10px 'JetBrains Mono',monospace;width:32px;text-align:right;color:var(--muted)}
 .motion-note{color:var(--muted);font-size:10px;margin:12px 0 0;line-height:1.5}
 
-footer{height:47px;padding:0 40px;border-top:1px solid #ffffff0b;display:flex;align-items:center;justify-content:space-between;font:10px 'JetBrains Mono',monospace;letter-spacing:1px;color:#7c859d;position:relative;z-index:1}
+footer{padding:0 40px;border-top:1px solid #ffffff0b;display:flex;align-items:center;justify-content:space-between;font:10px 'JetBrains Mono',monospace;letter-spacing:1px;color:#7c859d;position:relative;z-index:1}
 footer span i{font-style:normal;margin-left:12px;color:#545f79}
 footer button{display:flex;align-items:center;gap:12px;min-height:44px;font:12px Archivo,sans-serif;color:#a9aecb;letter-spacing:0}
 .mobile-actions{display:none}
@@ -156,9 +159,10 @@ to{opacity:1;transform:translateY(0)}
 .workspace{min-height:820px}
 .sidebar-foot{margin-top:22px}
 .scene-host{inset:5px 20px 220px 10px}
-.orbit-hint{bottom:308px}
+.orbit-hint{top:40px}
 .control-dock{bottom:42px}
-.inspector{left:330px;top:200px}
+.inspector{left:476px;top:42px}
+.with-card .scene-host{left:450px;right:84px}
 .canvas-region{left:310px}
 }
 
@@ -167,7 +171,8 @@ to{opacity:1;transform:translateY(0)}
 .sidebar{left:24px;width:196px}
 .canvas-region{left:220px}
 .control-dock{left:calc(220px + (100% - 220px)/2);width:calc(100% - 268px);padding:15px}
-.inspector{left:235px}
+.inspector{left:360px;top:34px;width:240px}
+.with-card .scene-host{left:396px;right:72px}
 .scene-mode{right:24px;font-size:10px}
 .view-switch{right:24px}
 .camera-tools{right:20px}
@@ -191,9 +196,9 @@ h1{font-size:38px;line-height:1.06;margin:14px 0 10px}
 .view-switch{position:relative;top:auto;right:auto;order:-1;margin:14px 16px 0;justify-content:center}
 .view-switch button{padding:10px 22px;flex:1;min-height:44px;font-size:13px}
 .canvas-region{position:relative;inset:auto;height:340px;min-height:300px;margin-top:4px}
-.scene-host{inset:0}
+.scene-host,.with-card .scene-host{inset:0}
 .scene-mode{top:auto;bottom:6px;left:16px;right:auto;font-size:11px;gap:5px}
-.orbit-hint{bottom:30px;left:50%;font-size:11px}
+.orbit-hint{top:auto;bottom:30px;left:50%;font-size:11px}
 .sidebar{display:none}
 .camera-tools{position:relative;top:auto;right:auto;transform:none;flex-direction:row;flex-wrap:wrap;justify-content:center;margin:8px 16px 0;padding:2px}
 .camera-tools button{height:44px;width:44px}
@@ -232,7 +237,7 @@ input[type=range]{height:44px}
 .inspector p{font-size:14px}
 .inspector small{font-size:12px}
 .inspector-actions button{min-height:44px;font-size:13px}
-footer{height:auto;min-height:70px;padding:16px;gap:10px;align-items:flex-start;flex-direction:column;font-size:11px}
+footer{min-height:70px;padding:16px;gap:10px;align-items:flex-start;flex-direction:column;font-size:11px}
 footer button{font-size:13px}
 .sources-dialog{padding:22px}
 .sources-dialog h2{font-size:28px}
@@ -254,6 +259,6 @@ footer button{font-size:13px}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
 }
 
-.format-button{font:11px "JetBrains Mono",monospace!important}
+.format-button{font:11px "JetBrains Mono",monospace}
 .license-links{display:flex;flex-wrap:wrap;gap:12px;font-size:11px;color:#a9aecb}
 .license-links a{text-decoration:underline}

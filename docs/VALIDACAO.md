@@ -42,3 +42,9 @@ Fluxo a conferir após cada publicação: abrir pelo cabeçalho, capa legível, 
 Nesta rodada, os dez players foram carregados no Chrome em estado pronto (`5` / cued), com o ID esperado e sem reprodução automática. Navegação pelo cabeçalho, clique/Enter, dimensões mínimas, thumbnail local e link direto aprovados; nenhuma requisição ao YouTube antes do clique ou erro JavaScript nos fluxos.
 
 O mesmo fluxo passou nas dez URLs públicas do GitHub Pages em 08/11/2026: player pronto com ID correto, sem autoplay, sem chamadas ao YouTube antes do clique, teclado e dimensões responsivas aprovados, sem erros JavaScript. A verificação confirmou carregamento do player; não assistiu integralmente aos vídeos.
+
+## Cartões e cabeçalho — 09/11/2026
+
+No desktop, os cartões "Em detalhe" e "Visita guiada" abrem à direita do título e da introdução, acima do painel de controles; enquanto um cartão está aberto, a cena encolhe para o lado direito e reenquadra o modelo, sem cobrir texto nem o caminhão. Medido no Chromium headless com os dez conjuntos e as quatro etapas da visita em 1440×900, 1280×800, 1366×768, 1920×1080, 1100×720, 1024×768 e 800×800: nenhuma sobreposição com título, subtítulo, introdução, lista, painel ou ferramentas da câmera. No celular (390×844) o cartão continua no fluxo da página.
+
+O número do cabeçalho ("LAB 03", "EXPERIMENTO 03") vem de `labNumber('caminhao-lixo')` do kit, igual ao menu da coleção. O link do topo chama-se "Ver o vídeo". A dica de mouse aparece só com ponteiro fino e a de toque só com ponteiro grosso; no desktop ela fica no alto da cena, não atrás do painel. Testes, build e `check:pages` aprovados.
