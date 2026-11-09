@@ -22,7 +22,7 @@ Não foram copiados desenhos, PDF, medidas, logotipos McNeilus ou texturas do fa
 | Asset | Origem | Uso e termos |
 |---|---|---|
 | Geometria e materiais do caminhão | Autoria desta implementação para ovictorlab | Código procedural em `src/scene/truck.ts`; nenhum modelo externo redistribuído |
-| Marca | SVG oficial do site ovictorlab.com | `public/icon.svg` e `src/ui/Brand.tsx`, identidade do próprio projeto |
+| Marca | SVG oficial do site ovictorlab.com | `public/icon.svg` e `src/kit/Brand.tsx`, identidade do próprio projeto |
 | Áudio | Síntese Web Audio local | Sem gravação externa; som ilustrativo |
 | Anton, Archivo, Archivo Black, JetBrains Mono | Pacotes Fontsource 5.3.0 | SIL OFL 1.1; textos em `public/licenses/` |
 | React, Three, Vite, Lucide e demais bibliotecas | Dependências fixadas em package-lock.json | Avisos/termos agregados em `public/licenses/bibliotecas.txt` |

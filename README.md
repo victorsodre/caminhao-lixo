@@ -2,7 +2,7 @@
 
 **[Abrir a experiência →](https://victorsodre.github.io/caminhao-lixo/)** · [Os 10 experimentos](docs/COLECAO.md) · [Publicação e manutenção](docs/PUBLICACAO.md)
 
-[![Caminhão de lixo — captura real da experiência](public/share.png)](https://victorsodre.github.io/caminhao-lixo/)
+[![Caminhão de lixo — captura real da experiência](public/share.jpg)](https://victorsodre.github.io/caminhao-lixo/)
 
 **Como cabe tanto lixo dentro do caminhão?**
 
