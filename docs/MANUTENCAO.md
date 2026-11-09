@@ -8,7 +8,9 @@
 - Revisar diff, evitar segredos e incluir apenas mudanças da tarefa. Não adicionar diretórios de configuração pessoal, tokens ou snapshots de sessão.
 - Testar URL de vídeo, acesso às fontes, carregamento, fallback e navegação por teclado.
 - Conferir visualmente 1440×900, 390×844 e orientação horizontal; usar ao menos um navegador desktop e um celular real quando disponível. Registrar dispositivo e limitações.
-- Exercitar selecionar → isolar → reenquadrar → cortar/desmontar → montar → reset. Câmera deve conservar o objeto visível.
+- Exercitar selecionar → isolar → reenquadrar → cortar/desmontar → montar → reset. Câmera deve conservar o objeto visível e a direção da órbita.
+- Exercitar o acúmulo: dois ciclos seguidos, "Encher a caixa" até cheia, "Esvaziar a caixa" e reset. Mudou `BODY`, `HOPPER_LOAD` ou `CYCLES_TO_FILL`? O teste de compactação precisa continuar entre 3× e 4×.
+- Mudou etapa, título ou vídeo? Atualizar o resumo e o JSON-LD do `index.html` (o `seo.test.ts` acusa a diferença).
 - Testar mecanismo no início, meio, fim, pausa, retomada, reset e alternância de aba. Ausência de NaN e poses acumuladas é critério funcional.
 - Comparar captura inicial, seleção, corte e desmontagem com o guia visual. Validar som desligado e movimento reduzido.
 

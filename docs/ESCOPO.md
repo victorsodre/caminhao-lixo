@@ -29,7 +29,7 @@ Base de exploração: órbita, zoom, seleção por lista ou clique, isolamento, 
 
 ## Estado do mecanismo
 
-`abrir → descer → varrer → compactar → concluído`; pausa conserva a fase, repetir inicia outro ciclo e reset restaura a experiência. A pose mecânica final coincide com a inicial; os resíduos permanecem dentro da caixa até repetir/resetar.
+`abrir → descer → varrer → compactar → concluído`; pausa conserva a fase e reset restaura a experiência. A pose mecânica final coincide com a inicial. Cada ciclo concluído deixa uma camada compactada na caixa e a placa ejetora recua; o próximo ciclo traz carga nova à caçamba. Com a caixa cheia, o botão principal esvazia a caixa (a descarga em si não é animada).
 
 ## Critérios específicos de conclusão
 

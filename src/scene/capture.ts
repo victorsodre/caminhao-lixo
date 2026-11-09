@@ -1,9 +1,9 @@
 import * as T from 'three';
 import { fit } from './camera.ts';
 
-export function saveSceneImage(renderer: T.WebGLRenderer, scene: T.Scene, camera: T.PerspectiveCamera, object: T.Object3D, portrait = false) {
+export function saveSceneImage(renderer: T.WebGLRenderer, scene: T.Scene, camera: T.PerspectiveCamera, object: T.Object3D, portrait: boolean, status: string) {
   const width = portrait ? 1080 : 1920, height = portrait ? 1920 : 1080;
-  const heading = portrait ? 250 : 150, footer = 100, sceneHeight = height - heading - footer;
+  const heading = portrait ? 250 : 150, footer = portrait ? 150 : 100, sceneHeight = height - heading - footer;
   const size = renderer.getSize(new T.Vector2()), ratio = renderer.getPixelRatio(), aspect = camera.aspect;
   const position = camera.position.clone(), quaternion = camera.quaternion.clone();
   const direction = camera.getWorldDirection(new T.Vector3()).negate();
@@ -21,8 +21,14 @@ export function saveSceneImage(renderer: T.WebGLRenderer, scene: T.Scene, camera
     ctx.stroke(new Path2D('M50 12 A38 38 0 1 0 88 50')); ctx.beginPath(); ctx.arc(50, 50, 13, 0, Math.PI * 2); ctx.fill(); ctx.restore();
     ctx.fillStyle = '#f1f2f8'; ctx.font = '34px "Archivo Black", sans-serif'; ctx.fillText('ovictorlab', 108, 72);
     ctx.font = `${portrait ? 56 : 44}px Anton, sans-serif`; ctx.fillText('CAMINHÃO DE LIXO POR DENTRO', 50, portrait ? 174 : 130);
-    ctx.fillStyle = '#a9aecb'; ctx.font = '22px Archivo, sans-serif'; ctx.fillText('Explore o mecanismo · modelo educativo', 50, height - 53);
-    ctx.textAlign = 'right'; ctx.fillStyle = '#ffd21f'; ctx.fillText('ovictorlab.com', width - 50, height - 53);
+    ctx.fillStyle = '#a9aecb'; ctx.font = '22px Archivo, sans-serif';
+    if (portrait) {
+      ctx.fillText(status, 50, height - 92);
+      ctx.fillStyle = '#ffd21f'; ctx.fillText('victorsodre.github.io/caminhao-lixo', 50, height - 50);
+    } else {
+      ctx.fillText(status, 50, height - 53);
+      ctx.textAlign = 'right'; ctx.fillStyle = '#ffd21f'; ctx.fillText('victorsodre.github.io/caminhao-lixo', width - 50, height - 53);
+    }
     output.toBlob(blob => {
       if (!blob) return;
       const url = URL.createObjectURL(blob), link = document.createElement('a');

@@ -6,17 +6,17 @@ export type Part = {
 };
 export type Assembly = {
   root: Group; parts: Part[];
-  update: (progress: number, cutaway: boolean) => void;
+  update: (progress: number, cutaway: boolean, loads?: number) => void;
   dispose: () => void;
 };
 export type ViewState = {
-  progress: number; cutaway: boolean; explosion: number;
+  progress: number; loads: number; cutaway: boolean; explosion: number;
   selected: string | null; isolated: boolean; wireframe: boolean;
 };
 export type SceneHandle = {
   update: (state: ViewState) => void;
   home: () => void; focus: (id: string) => void;
-  zoom: (factor: number) => void; capture: (portrait?: boolean) => void;
+  zoom: (factor: number) => void; capture: (portrait: boolean, status: string) => void;
   preset: (view: 'perspective' | 'side' | 'rear') => void;
   dispose: () => void;
 };

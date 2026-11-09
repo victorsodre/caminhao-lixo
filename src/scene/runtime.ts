@@ -19,6 +19,9 @@ export function createScene(host: HTMLElement, onSelect: (id: string | null) => 
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true; controls.dampingFactor = .13; controls.minDistance = 1.6; controls.maxDistance = 36;
   controls.maxPolarAngle = Math.PI * .49; controls.screenSpacePanning = false;
+  controls.touches.TWO = T.TOUCH.DOLLY_ROTATE;
+  // Touch: a vertical swipe scrolls the page; sideways drags orbit and a pinch zooms.
+  if (matchMedia('(pointer: coarse)').matches) renderer.domElement.style.touchAction = 'pan-y';
   const model = createTruck(); scene.add(model.root);
   const envScene = new RoomEnvironment(), pmrem = new T.PMREMGenerator(renderer);
   const environment = pmrem.fromScene(envScene, .04); scene.environment = environment.texture; scene.environmentIntensity = .65;
@@ -35,7 +38,7 @@ export function createScene(host: HTMLElement, onSelect: (id: string | null) => 
   const gridMaterial = grid.material as T.Material; gridMaterial.transparent = true; gridMaterial.opacity = .17; scene.add(grid);
   const highlight = new T.BoxHelper(model.root, '#ffd21f'); highlight.visible = false; scene.add(highlight);
   const defaultDirection = new T.Vector3(1.1, .58, 1.5);
-  let state: ViewState = { progress: 0, cutaway: false, explosion: 0, selected: null, isolated: false, wireframe: false };
+  let state: ViewState = { progress: 0, loads: 0, cutaway: false, explosion: 0, selected: null, isolated: false, wireframe: false };
   let active = false, disposed = false, dirty = true, lastFrame = -Infinity;
 
   function invalidate() {
@@ -52,6 +55,11 @@ export function createScene(host: HTMLElement, onSelect: (id: string | null) => 
     renderer.domElement.dataset.renderCount = String(Number(renderer.domElement.dataset.renderCount ?? 0) + 1);
     if (!moved && !dirty) { renderer.setAnimationLoop(null); active = false; }
   }
+  /** Keeps the user's orbit: the current view direction, refitted to the model. */
+  const currentDirection = () => {
+    const direction = camera.position.clone().sub(controls.target);
+    return direction.lengthSq() > 1e-8 ? direction : defaultDirection.clone();
+  };
   function home(direction = defaultDirection) {
     const selected = model.parts.find(p => p.id === state.selected);
     const bounds = new T.Box3().setFromObject(state.isolated && selected ? selected.group : model.root);
@@ -59,24 +67,38 @@ export function createScene(host: HTMLElement, onSelect: (id: string | null) => 
   }
   function size() {
     const { width, height } = host.getBoundingClientRect(); if (width < 1 || height < 1) return;
-    renderer.setSize(width, height); camera.aspect = width / height; home();
+    renderer.setSize(width, height); camera.aspect = width / height; home(currentDirection());
   }
   const observer = new ResizeObserver(size); observer.observe(host);
   const change = () => invalidate(); controls.addEventListener('change', change);
-  const down = new T.Vector2();
-  const pointerDown = (event: PointerEvent) => down.set(event.clientX, event.clientY);
+  // A tap selects a part only if it was short, still and single-pointer; drags, pinches and taps
+  // on empty space never clear the selection.
+  const pointers = new Set<number>();
+  let tap: { id: number; x: number; y: number; time: number } | null = null;
+  const pointerDown = (event: PointerEvent) => {
+    pointers.add(event.pointerId);
+    tap = pointers.size === 1 && event.button === 0 ? { id: event.pointerId, x: event.clientX, y: event.clientY, time: event.timeStamp } : null;
+  };
+  const pointerEnd = (event: PointerEvent) => { pointers.delete(event.pointerId); if (event.type === 'pointercancel') tap = null; };
   const pointerUp = (event: PointerEvent) => {
-    if (down.distanceTo(new T.Vector2(event.clientX, event.clientY)) > 6) return;
+    pointers.delete(event.pointerId);
+    const start = tap; tap = null;
+    if (!start || start.id !== event.pointerId || event.timeStamp - start.time > 450) return;
+    if (Math.hypot(event.clientX - start.x, event.clientY - start.y) > (event.pointerType === 'mouse' ? 5 : 10)) return;
     const rect = renderer.domElement.getBoundingClientRect();
     const mouse = new T.Vector2((event.clientX - rect.left) / rect.width * 2 - 1, -(event.clientY - rect.top) / rect.height * 2 + 1);
     const ray = new T.Raycaster(); ray.setFromCamera(mouse, camera);
     const meshes: T.Object3D[] = []; model.root.traverseVisible(o => { if (o instanceof T.Mesh) meshes.push(o); });
     const hit = ray.intersectObjects(meshes, false)[0]; let current: T.Object3D | undefined = hit?.object;
     while (current && !current.userData.partId) current = current.parent ?? undefined;
-    onSelect(current?.userData.partId ?? null);
+    if (current?.userData.partId) onSelect(current.userData.partId);
   };
   renderer.domElement.addEventListener('pointerdown', pointerDown);
   renderer.domElement.addEventListener('pointerup', pointerUp);
+  renderer.domElement.addEventListener('pointercancel', pointerEnd);
+  // The wheel scrolls the page; Ctrl/⌘ + wheel (and trackpad pinch) zooms the model.
+  const wheel = (event: WheelEvent) => { if (!event.ctrlKey && !event.metaKey) event.stopPropagation(); };
+  host.addEventListener('wheel', wheel, { capture: true, passive: true });
   function visibility() {
     if (document.hidden) { renderer.setAnimationLoop(null); active = false; }
     else { lastFrame = -Infinity; invalidate(); }
@@ -88,13 +110,14 @@ export function createScene(host: HTMLElement, onSelect: (id: string | null) => 
 
   return {
     update(next) {
-      const reframe = next.isolated !== state.isolated || Math.abs(next.explosion - state.explosion) > .02;
-      state = next; model.update(state.progress, state.cutaway);
+      const reframe = next.isolated !== state.isolated || next.explosion !== state.explosion;
+      const wireframeChanged = next.wireframe !== state.wireframe;
+      state = next; model.update(state.progress, state.cutaway, state.loads);
       for (const p of model.parts) {
         p.group.position.copy(p.offset).multiplyScalar(state.explosion * 1.4);
         p.group.visible = !state.isolated || p.id === state.selected;
       }
-      model.root.traverse(object => {
+      if (wireframeChanged) model.root.traverse(object => {
         if (object instanceof T.Mesh) for (const material of Array.isArray(object.material) ? object.material : [object.material]) {
           if (material instanceof T.MeshStandardMaterial) material.wireframe = state.wireframe;
         }
@@ -102,23 +125,24 @@ export function createScene(host: HTMLElement, onSelect: (id: string | null) => 
       const selected = model.parts.find(p => p.id === state.selected);
       highlight.visible = Boolean(selected) && !state.isolated;
       if (selected) highlight.setFromObject(selected.group);
-      if (reframe) home(); invalidate();
+      if (reframe) home(currentDirection()); invalidate();
     },
     home: () => home(),
     focus(id) {
       const p = model.parts.find(p => p.id === id); if (!p) return;
-      controls.target.copy(fit(camera, new T.Box3().setFromObject(p.group), defaultDirection)); controls.update(); invalidate();
+      controls.target.copy(fit(camera, new T.Box3().setFromObject(p.group), currentDirection())); controls.update(); invalidate();
     },
     zoom(factor) { camera.position.sub(controls.target).multiplyScalar(factor).add(controls.target); controls.update(); invalidate(); },
     preset(view) { home(view === 'side' ? new T.Vector3(.01, .15, 1) : view === 'rear' ? new T.Vector3(1, .2, .01) : defaultDirection); },
-    capture(portrait = false) {
+    capture(portrait, status) {
       const selected = model.parts.find(p => p.id === state.selected);
-      saveSceneImage(renderer, scene, camera, state.isolated && selected ? selected.group : model.root, portrait);
+      saveSceneImage(renderer, scene, camera, state.isolated && selected ? selected.group : model.root, portrait, status);
       invalidate();
     },
     dispose() {
       disposed = true; renderer.setAnimationLoop(null); observer.disconnect(); controls.removeEventListener('change', change); controls.dispose();
       renderer.domElement.removeEventListener('pointerdown', pointerDown); renderer.domElement.removeEventListener('pointerup', pointerUp);
+      renderer.domElement.removeEventListener('pointercancel', pointerEnd); host.removeEventListener('wheel', wheel, { capture: true });
       renderer.domElement.removeEventListener('webglcontextlost', lost); document.removeEventListener('visibilitychange', visibility);
       model.dispose(); environment.dispose(); floor.geometry.dispose(); (floor.material as T.Material).dispose();
       grid.geometry.dispose(); gridMaterial.dispose(); highlight.geometry.dispose(); (highlight.material as T.Material).dispose();

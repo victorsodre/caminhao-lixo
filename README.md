@@ -55,12 +55,12 @@ npm run preview
 
 ## Recursos entregues
 
-Modelo procedural autoral com nove conjuntos, ciclo de compactação em quatro movimentos, pausa e reset, corte, desmontagem, seleção por clique/lista, busca, isolamento, reenquadramento, malha, visita guiada e som sintetizado opcional. Captura PNG com a identidade ovictorlab em 1920×1080 e 1080×1920.
+Modelo procedural autoral com dez conjuntos, ciclo de compactação em quatro movimentos, placa ejetora que recua sob a carga, compactação que acumula entre ciclos com medidor "caixa X% cheia · N ciclos" e tempo-lapso "Encher a caixa", pausa e reset, corte, desmontagem, seleção por clique/lista, busca, isolamento, reenquadramento, malha, visita guiada e som sintetizado opcional. Captura PNG com a identidade ovictorlab em 1920×1080 e 1080×1920.
 
-Referência mecânica: McNeilus Standard Rear Loader, manual 1432584, seção 3.6/figura 25. A geometria e o tempo são educativos; não são medidas ou parâmetros de operação de um caminhão real.
+Referência mecânica: McNeilus Standard Rear Loader, manual 1432584, seção 3.6/figura 25 (ciclo) e seção 2.6 (recuo da placa ejetora). Redução de volume "até quatro vezes": Brasil do Trecho, 12/01/2026, a fonte do EP145. A geometria e o tempo são educativos; não são medidas ou parâmetros de operação de um caminhão real.
 
 ## Validação e manutenção
 
-[Resultados, ambiente e limites](docs/VALIDACAO.md). Dez testes de mecanismo/modelo/câmera aprovados; TypeScript e build aprovados; fluxos reais no Chrome, incluindo dimensões de celular e build em subpasta. Não houve ensaio em telefone físico.
+[Resultados, ambiente e limites](docs/VALIDACAO.md). Vinte testes de mecanismo, acúmulo, modelo, câmera e SEO aprovados; TypeScript e build aprovados; fluxos reais no Chrome, incluindo dimensões de celular e build em subpasta. Não houve ensaio em telefone físico.
 
 [Manutenção](docs/MANUTENCAO.md), [assets e licenças](docs/ASSETS-E-FONTES.md), [decisões](docs/DECISOES.md). Rascunhos do X continuam sem envio; o deploy automático está em `.github/workflows/pages.yml`.

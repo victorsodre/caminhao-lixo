@@ -1,6 +1,6 @@
 import * as T from 'three';
 import { box, mesh, rod, connect, materials, disposeTree, mergeStatic } from './geometry.ts';
-import { samplePacker, packerGeometry } from '../simulation/packer.ts';
+import { samplePacker, packerGeometry, ejectorFace, safeLoads, isFull, BODY, LAYER, CYCLES_TO_FILL } from '../simulation/packer.ts';
 import type { Assembly, Part } from './types.ts';
 
 export function createTruck(): Assembly {
@@ -10,15 +10,16 @@ export function createTruck(): Assembly {
     const group = new T.Group(); group.name = id; group.userData.partId = id; root.add(group);
     parts.push({ id, label, detail, note, group, offset: new T.Vector3(...offset) }); return group;
   };
-  const cabin = part('cabin', 'Cabine', 'O posto do motorista e a ligação do veículo com o trajeto da coleta.', 'O chassi foi desenhado para esta experiência; não representa uma marca de caminhão.', [-2.1, .2, 0]);
+  const cabin = part('cabin', 'Cabine', 'O posto do motorista e a ligação do veículo com o trajeto da coleta.', 'Cabine desenhada para esta experiência; não representa uma marca.', [-2.1, .2, 0]);
   const chassis = part('chassis', 'Chassi', 'A estrutura longitudinal sustenta a cabine, os eixos e a carroceria.', 'Longarinas, travessas e apoios formam a base do conjunto.', [0, -.65, 0]);
   const wheels = part('wheels', 'Rodas e eixos', 'Distribuem o peso do veículo e da carga sobre o solo.', 'Três eixos ilustrativos. A distribuição real depende da configuração do veículo.', [0, 0, 1.8]);
   const body = part('body', 'Caixa coletora', 'Recebe os resíduos que o compactador leva para dentro.', 'No modo Por dentro, uma lateral e a cobertura são retiradas para revelar o caminho.', [0, 1.7, -.8]);
+  const ejector = part('ejector', 'Placa ejetora', 'Parede móvel dentro da caixa. A cada compactação, a carga é esmagada contra ela, e a placa recua para a frente quando a pressão chega ao limite.', 'Recuo sob pressão descrito no manual McNeilus, seção 2.6. No aterro, ela empurra a carga para fora; a descarga não é animada aqui.', [0, 1.7, -.8]);
   const hopper = part('hopper', 'Caçamba de alimentação', 'É a região traseira em que os resíduos entram antes da compactação.', 'A lâmina varre esta área e conduz o material para a caixa coletora.', [1.7, -.1, 0]);
   const slide = part('slide', 'Carro deslizante', 'Desce e sobe sobre guias. Ele carrega a articulação da lâmina.', 'Na última etapa, sobe com a lâmina fechada e empurra a carga para dentro.', [1.4, 1.8, 0]);
   const sweep = part('sweep', 'Lâmina de varredura', 'Gira para recolher os resíduos na parte inferior da caçamba.', 'Seu movimento é diferente do deslocamento do carro: girar e deslizar se complementam.', [2.1, .4, 1.2]);
   const hydraulics = part('hydraulics', 'Atuadores hidráulicos', 'Transformam a energia do fluido em movimento linear para acionar os conjuntos.', 'Os pontos de articulação acompanham o mecanismo. Pressão e força não são simuladas.', [1.2, .4, -1.7]);
-  const load = part('load', 'Resíduos', 'Acompanhe o material da entrada até o interior da carroceria.', 'Volumes e deformações são recursos de explicação, sem taxa de compactação medida.', [-.7, .1, 1.9]);
+  const load = part('load', 'Resíduos', 'Acompanhe o lixo da caçamba até a carga já compactada dentro da caixa.', `Cada carga solta vira uma camada cerca de 4 vezes menor, na ordem do "até quatro vezes" citado no EP145. Os ${CYCLES_TO_FILL} ciclos até encher são ilustrativos.`, [-.7, .1, 1.9]);
 
   // Frame, crossmembers, running boards and rear underride bar.
   for (const z of [-.65, .65]) box(chassis, [7.4, .2, .15], [.1, .92, z], m.dark);
@@ -128,15 +129,58 @@ export function createTruck(): Assembly {
     slideBody: rod(hydraulics, .09, m.yellow), slideRod: rod(hydraulics, .042, m.silver),
     sweepBody: rod(hydraulics, .075, m.yellow), sweepRod: rod(hydraulics, .034, m.silver),
   }));
-  const waste: { object: T.Mesh; origin: T.Vector3 }[] = [];
-  const wasteMats = ['#62666c', '#b09a72', '#526659', '#9a9a8c'].map(color => new T.MeshStandardMaterial({ color, roughness: .95 }));
-  for (let i = 0; i < 24; i++) {
-    const x = 3.15 + (i % 4) * .23, y = 1.33 + Math.floor(i / 8) * .18, z = -.72 + (Math.floor(i / 4) % 2) * 1.05 + (i % 3) * .07;
-    const item = mesh(load, new T.IcosahedronGeometry(.24, 1), wasteMats[i % 4], x, y, z);
-    item.rotation.set(i * .7, i * 1.9, i * .3); waste.push({ object: item, origin: item.position.clone() });
-  }
+  // Ejector panel: its rear face is the front of the packed load. It retracts as layers accumulate.
+  const ejectorPanel = new T.Group(); ejector.add(ejectorPanel);
+  const panelHeight = BODY.top - BODY.floor, panelY = (BODY.top + BODY.floor) / 2;
+  box(ejectorPanel, [.12, panelHeight, BODY.halfWidth * 2], [-.06, panelY, 0], m.steel, .02);
+  for (const y of [panelY - .62, panelY + .62]) box(ejectorPanel, [.07, .1, BODY.halfWidth * 1.9], [-.15, y, 0], m.dark);
+  mergeStatic(ejectorPanel);
+  const ejectorBase = new T.Vector3(-1.78, panelY + .25, 0);
+  const ejectorStages = [.1, .075, .052].map((radius, i) => rod(ejector, radius, i ? m.silver : m.yellow));
 
-  function update(progress: number, cutaway: boolean) {
+  // Packed load: one box whose texture repeats once per layer, so each cycle reads as a band.
+  const layered = new T.MeshStandardMaterial({ color: '#8d8a7c', roughness: .96 });
+  const packedEnd = new T.MeshStandardMaterial({ color: '#8d8a7c', roughness: .96 });
+  if (typeof document !== 'undefined') {
+    const canvas = document.createElement('canvas'); canvas.width = 64; canvas.height = 256;
+    const ctx = canvas.getContext('2d');
+    if (ctx) {
+      const colors = ['#62666c', '#b09a72', '#526659', '#9a9a8c', '#7d6f5a'];
+      for (let i = 0; i < 220; i++) {
+        ctx.fillStyle = colors[i % colors.length];
+        ctx.fillRect((i * 37) % 64, (i * 53) % 256, 8 + (i % 5) * 4, 5 + (i % 3) * 3);
+      }
+      ctx.fillStyle = '#2a2d33'; ctx.fillRect(0, 0, 3, 256);
+      const texture = new T.CanvasTexture(canvas); texture.colorSpace = T.SRGBColorSpace; texture.wrapS = T.RepeatWrapping;
+      layered.map = texture; layered.color.set('#ffffff');
+      const end = texture.clone(); end.repeat.set(4, 1); packedEnd.map = end; packedEnd.color.set('#ffffff');
+    }
+  }
+  // Box faces: ±x (ends) show plain refuse; top, bottom and sides show one band per layer.
+  const packed = new T.Mesh(new T.BoxGeometry(1, 1, 1), [packedEnd, packedEnd, layered, layered, layered, layered]);
+  packed.castShadow = packed.receiveShadow = true; load.add(packed);
+
+  // Loose bags in the hopper, kept clear of the blade path. Each one is squashed into the new layer.
+  const waste: { object: T.Mesh; origin: T.Vector3; rotation: T.Quaternion; gather: T.Vector3; target: T.Vector3; squash: T.Vector3 }[] = [];
+  const wasteMats = ['#62666c', '#b09a72', '#526659', '#9a9a8c'].map(color => new T.MeshStandardMaterial({ color, roughness: .95 }));
+  const radius = .2, rows = 4, columns = 6, cellY = panelHeight / rows, cellZ = BODY.halfWidth * 2 / columns;
+  for (let i = 0; i < 24; i++) {
+    const col = i % 4, row = Math.floor(i / 4) % 3, layer = Math.floor(i / 12);
+    const x = 3 + col / 3, floorY = 1.225 - .131 * (x - 3.25), bottom = floorY + radius;
+    const y = layer ? Math.min(bottom + .36, 1.7) : bottom, z = (row - 1) * .6 + (col % 2 ? .05 : -.05);
+    const item = mesh(load, new T.IcosahedronGeometry(radius, 1), wasteMats[i % 4], x, y, z);
+    item.rotation.set(i * .7, i * 1.9, i * .3);
+    const k = i % rows, j = Math.floor(i / rows);
+    waste.push({
+      object: item, origin: item.position.clone(), rotation: item.quaternion.clone(),
+      gather: new T.Vector3(1.98 + col * .14, 1.52 + layer * .42 + row * .12, (row - 1) * .55),
+      target: new T.Vector3(BODY.rear - LAYER / 2, BODY.floor + (k + .5) * cellY, -BODY.halfWidth + (j + .5) * cellZ),
+      squash: new T.Vector3(LAYER / (radius * 2), cellY / (radius * 2), cellZ / (radius * 2)),
+    });
+  }
+  const identity = new T.Quaternion();
+
+  function update(progress: number, cutaway: boolean, loads = 0) {
     const pose = samplePacker(progress);
     for (const panel of shells) panel.visible = !cutaway;
     const geometry = packerGeometry(progress);
@@ -150,12 +194,25 @@ export function createTruck(): Assembly {
       const end = new T.Vector3(.07, -.66, 0).applyAxisAngle(new T.Vector3(0, 0, 1), angle).add(pivot); end.z = c.z;
       const join2 = a2.clone().lerp(end, .6); connect(c.sweepBody, a2, join2); connect(c.sweepRod, join2, end);
     }
-    for (const { object, origin } of waste) {
-      object.position.copy(origin).lerp(new T.Vector3(origin.x - 2.2, origin.y + .16, origin.z), pose.transfer);
-      object.scale.set(1 - .42 * pose.transfer, 1 - .25 * pose.transfer, 1);
+    const done = safeLoads(loads), full = isFull(done), pack = full ? 0 : pose.pack;
+    const face = ejectorFace(done, progress);
+    ejectorPanel.position.x = face;
+    const reach = new T.Vector3(face - .19, ejectorBase.y, 0).sub(ejectorBase);
+    ejectorStages.forEach((stage, i) => connect(stage, ejectorBase.clone().addScaledVector(reach, i / 3), ejectorBase.clone().addScaledVector(reach, Math.min(1, (i + 1.15) / 3))));
+    const length = LAYER * done, rearFace = BODY.rear - LAYER * pack;
+    packed.visible = length > 0;
+    packed.scale.set(Math.max(length, 1e-4), panelHeight, BODY.halfWidth * 2);
+    packed.position.set(rearFace - length / 2, panelY, 0);
+    layered.map?.repeat.set(Math.max(1, done), 1);
+    for (const { object, origin, rotation, gather, target, squash } of waste) {
+      object.visible = !full;
+      object.position.copy(origin).lerp(gather, pose.gather).lerp(target, pack);
+      object.quaternion.copy(rotation).slerp(identity, pack);
+      const loose = 1 - .15 * pose.gather;
+      object.scale.set(loose, loose, loose).lerp(squash, pack);
     }
   }
   for (const group of [cabin, chassis, wheels, carriage, blade]) mergeStatic(group);
-  update(0, false);
+  update(0, false, 0);
   return { root, parts, update, dispose: () => disposeTree(root) };
 }
